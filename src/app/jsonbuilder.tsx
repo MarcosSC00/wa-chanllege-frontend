@@ -20,17 +20,17 @@ export function JsonBuilder() {
         }
     }
 
-    const addNode = (node: Node, target: string, newNode: Node): boolean => {
-        if (node.name.toLowerCase() === target.toLowerCase()) {
-            if (node.children) {
-                node.children.push(newNode)
+    const isNodeAddable = (hierarchy: Node, targetNode: string, newNode: Node): boolean => {
+        if (hierarchy.name.toLowerCase() === targetNode.toLowerCase()) {
+            if (hierarchy.children) {
+                hierarchy.children.push(newNode)
             } else {
-                node.children = [{ name: target, children: [] }]
+                hierarchy.children = [{ name: targetNode, children: [] }]
             }
             return true
         }
-        for (const child of node.children) {
-            const add = addNode(child, target, newNode)
+        for (const child of hierarchy.children) {
+            const add = isNodeAddable(child, targetNode, newNode)
             if (add) return true
         }
         return false
@@ -49,7 +49,7 @@ export function JsonBuilder() {
         const newNode = { name: newNodeName, children: [] }
         const newHierachy = { ...hierarchy } as Node
 
-        const add = addNode(newHierachy, targetNode, newNode)
+        const add = isNodeAddable(newHierachy, targetNode, newNode)
 
         if (add) {
             setHierarchy(newHierachy)
@@ -60,12 +60,12 @@ export function JsonBuilder() {
         }
     }
 
-    const nodeExist = (node: Node, name: string): boolean => {
-        if (node.name.toLowerCase() === name.toLowerCase()) {
+    const nodeExist = (hierarchy: Node, name: string): boolean => {
+        if (hierarchy.name.toLowerCase() === name.toLowerCase()) {
             return true
         }
 
-        for (const child of node.children) {
+        for (const child of hierarchy.children) {
             if (nodeExist(child, name)) {
                 return true
             }
@@ -154,7 +154,7 @@ export function JsonBuilder() {
                     onClick={() => salveJson()}
                     className="py-1 px-3 mt-3 text-md font-semibold bg-green-600 rounded-md transition-colors duration-150 hover:bg-green-700"
                 >
-                    SALVAR
+                    DOWNLOAD
                 </button>
             </div>
 
